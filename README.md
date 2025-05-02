@@ -22,7 +22,7 @@ Welcome to Memory Management Simulator. This is a repository used for University
     python -m venv .venv
 
     # Linux
-    source .env/bin/activate
+    source .venv/bin/activate
 
     # Windows
     .venv\Scripts\activate
