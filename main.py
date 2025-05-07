@@ -31,55 +31,8 @@ class MemoryManagementApp:
         memory_frame = ctk.CTkFrame(self.left_panel)
         memory_frame.pack(fill="x", padx=10, pady=10)
 
-        memory_label = ctk.CTkLabel(
-            memory_frame,
-            text="Total Memory (MB)",
-            font=ctk.CTkFont(size=14, weight="bold"),
-        )
-        memory_label.pack(side="left", padx=5)
-
-        self.memory_size_var = ctk.StringVar(value="1024")
-        memory_entry = ctk.CTkEntry(
-            memory_frame,
-            textvariable=self.memory_size_var,
-            width=100,
-        )
-        memory_entry.pack(side="left", padx=5)
-
-        update_btn = ctk.CTkButton(
-            memory_frame,
-            text="Update",
-            command=lambda: print(f"Button ditekan, memori update: {self.memory_size_var.get()} MB"),
-        )
-        update_btn.pack(side="left", padx=5)
-
         process_frame = ctk.CTkFrame(self.left_panel)
         process_frame.pack(fill="x", padx=10, pady=10)
-
-        name_label = ctk.CTkLabel(
-            process_frame,
-            text="Process Name:",
-        )
-        name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-        self.process_name_var = ctk.StringVar()
-        name_entry = ctk.CTkEntry(
-            process_frame,
-            textvariable=self.process_name_var,
-            width=150,
-        )
-        name_entry.grid(row=0, column=1, padx=5, pady=5)
-
-        size_label = ctk.CTkLabel(process_frame, text="Process Size (MB):")
-        size_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-        self.process_size_var = ctk.StringVar()
-        size_entry = ctk.CTkEntry(
-            process_frame,
-            textvariable=self.process_size_var,
-            width=150,
-        )
-        size_entry.grid(row=1, column=1, padx=5, pady=5)
 
         process_list_frame = ctk.CTkFrame(self.left_panel)
         process_list_frame.pack(fill="both", expand=True, padx=10, pady=10)
