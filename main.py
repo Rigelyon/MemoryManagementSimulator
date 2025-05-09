@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from config import WINDOW_WIDTH, WINDOW_HEIGHT
+from config import SECONDARY_COLOR, WINDOW_WIDTH, WINDOW_HEIGHT
 from memory_visualizer import MemoryVisualizer
 
 
@@ -81,13 +81,54 @@ class MemoryManagementApp:
         )
         size_entry.grid(row=1, column=1, padx=5, pady=5)
 
+        time_label = ctk.CTkLabel(process_frame, text="Duration (seconds):")
+        time_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        
+        self.process_time_var = ctk.StringVar(value="120")
+        time_entry = ctk.CTkEntry(process_frame, textvariable=self.process_time_var, width=150)
+        time_entry.grid(row=2, column=1, padx=5, pady=5)
+        
+        algo_label = ctk.CTkLabel(process_frame, text="Algorithm:")
+        algo_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        
+        self.algorithm_var = ctk.StringVar(value="First Fit")
+        algorithms = ["First Fit", "Best Fit", "Worst Fit"]
+        algo_dropdown = ctk.CTkOptionMenu(process_frame, values=algorithms, variable=self.algorithm_var)
+        algo_dropdown.grid(row=3, column=1, padx=5, pady=5)
+        
+        add_btn = ctk.CTkButton(process_frame, text="Add Process", command=self.add_process)
+        add_btn.grid(row=4, column=0, columnspan=2, padx=5, pady=10)
+
         process_list_frame = ctk.CTkFrame(self.left_panel)
         process_list_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        list_label = ctk.CTkLabel(process_list_frame, text="Process Queue:", 
+                            font=ctk.CTkFont(weight="bold"))
+        list_label.pack(pady=5)
+        
+        self.process_list_scroll = ctk.CTkScrollableFrame(process_list_frame, width=250, height=200)
+        self.process_list_scroll.pack(fill="both", expand=True, padx=5, pady=5)
+        
+        self.process_ui_elements = {}
+
+        clear_btn = ctk.CTkButton(self.left_panel, text="Clear All", 
+                            command=self.clear_all, fg_color=SECONDARY_COLOR)
+        clear_btn.pack(pady=10)
 
         self.right_panel = ctk.CTkFrame(self.main_frame)
         self.right_panel.pack(side="right", fill="both", expand=True, padx=10, pady=10)
 
         self.memory_visualizer = MemoryVisualizer(self.right_panel)
+
+        self.status_var = ctk.StringVar(value="Ready")
+        status_bar = ctk.CTkLabel(self.root, textvariable=self.status_var, anchor="w")
+        status_bar.pack(side="bottom", fill="x", padx=10, pady=5)
+
+    def add_process(self):
+        pass
+
+    def clear_all(self):
+        pass
 
     def run(self):
         self.root.mainloop()
