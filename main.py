@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from config import SECONDARY_COLOR, WINDOW_WIDTH, WINDOW_HEIGHT
+from config import PRIMARY_COLOR, SECONDARY_COLOR, WINDOW_WIDTH, WINDOW_HEIGHT
 from memory_visualizer import MemoryVisualizer
 
 
@@ -53,6 +53,36 @@ class MemoryManagementApp:
         )
         update_btn.pack(side="left", padx=5)
 
+        partition_frame = ctk.CTkFrame(self.left_panel)
+        partition_frame.pack(fill="x", padx=10, pady=10)
+        
+        partition_label = ctk.CTkLabel(partition_frame, text="Memory Partitions:", 
+                                     font=ctk.CTkFont(weight="bold"))
+        partition_label.pack(pady=5)
+        
+        partition_control_frame = ctk.CTkFrame(partition_frame)
+        partition_control_frame.pack(fill="x", padx=5, pady=5)
+        
+        num_partitions_label = ctk.CTkLabel(partition_control_frame, text="Number of Partitions:")
+        num_partitions_label.pack(side="left", padx=5)
+        
+        self.partition_count_var = ctk.StringVar(value="1")
+        partition_values = ["1", "2", "3", "4", "5", "6"]
+        partition_dropdown = ctk.CTkOptionMenu(partition_control_frame, values=partition_values, 
+                                            variable=self.partition_count_var,
+                                            command=self.update_partition_ui)
+        partition_dropdown.pack(side="left", padx=5)
+        
+        self.partition_sliders_frame = ctk.CTkFrame(partition_frame)
+        self.partition_sliders_frame.pack(fill="x", padx=5, pady=5)
+        
+        apply_partitions_btn = ctk.CTkButton(partition_frame, text="Apply Partitions", 
+                                            command=self.apply_partitions,
+                                            fg_color=PRIMARY_COLOR)
+        apply_partitions_btn.pack(pady=5)
+        
+        self.update_partition_ui("1")
+
         process_frame = ctk.CTkFrame(self.left_panel)
         process_frame.pack(fill="x", padx=10, pady=10)
 
@@ -103,7 +133,7 @@ class MemoryManagementApp:
         process_list_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         list_label = ctk.CTkLabel(process_list_frame, text="Process Queue:", 
-                            font=ctk.CTkFont(weight="bold"))
+        font=ctk.CTkFont(weight="bold"))
         list_label.pack(pady=5)
         
         self.process_list_scroll = ctk.CTkScrollableFrame(process_list_frame, width=250, height=200)
@@ -123,6 +153,12 @@ class MemoryManagementApp:
         self.status_var = ctk.StringVar(value="Ready")
         status_bar = ctk.CTkLabel(self.root, textvariable=self.status_var, anchor="w")
         status_bar.pack(side="bottom", fill="x", padx=10, pady=5)
+
+    def update_partition_ui(self, choice):
+        pass
+
+    def apply_partitions(self):
+        pass
 
     def add_process(self):
         pass
