@@ -139,7 +139,7 @@ class MemoryManagementApp:
         
         # Add Process Button
         add_btn = ctk.CTkButton(process_frame, text="Add Process", command=self.add_process)
-        add_btn.pack(pady=10)
+        add_btn.pack(pady=5)
 
         process_list_frame = ctk.CTkFrame(self.left_panel)
         process_list_frame.pack(fill="x", padx=10, pady=10)
