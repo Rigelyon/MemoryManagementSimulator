@@ -29,14 +29,6 @@ class MemoryVisualizer:
         
         self.stats_row1 = ctk.CTkFrame(self.stats_frame)
         self.stats_row1.pack(fill="x", padx=5, pady=5)
-        
-        self.memory_usage_var = ctk.StringVar(value="Memory Usage: 0 / 0 MB (0%)")
-        memory_usage_label = ctk.CTkLabel(self.stats_row1, textvariable=self.memory_usage_var)
-        memory_usage_label.pack(side="left", padx=10)
-        
-        self.fragmentation_var = ctk.StringVar(value="Fragmentation: 0%")
-        fragmentation_label = ctk.CTkLabel(self.stats_row1, textvariable=self.fragmentation_var)
-        fragmentation_label.pack(side="right", padx=10)
 
         self.memory_usage_var = ctk.StringVar(value="Memory Usage: 0 / 0 MB (0%)")
         memory_usage_label = ctk.CTkLabel(self.stats_row1, textvariable=self.memory_usage_var)
