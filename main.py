@@ -114,7 +114,7 @@ class MemoryManagementApp:
         )
         name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-        self.process_name_var = ctk.StringVar()
+        self.process_name_var = ctk.StringVar(value="Process 1")
         name_entry = ctk.CTkEntry(
             process_inputs_frame,
             textvariable=self.process_name_var,
@@ -126,7 +126,7 @@ class MemoryManagementApp:
         size_label = ctk.CTkLabel(process_inputs_frame, text="Process Size (MB):")
         size_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-        self.process_size_var = ctk.StringVar()
+        self.process_size_var = ctk.StringVar(value="60")
         size_entry = ctk.CTkEntry(
             process_inputs_frame,
             textvariable=self.process_size_var,
