@@ -451,7 +451,6 @@ class MemoryManagementApp:
                 time_var.set(
                     f"Time: {process.elapsed_time}s / {process.duration}s ({remaining_time}s left)"
                 )
-
             else:
                 time_var.set(f"Time: {process.elapsed_time}s / {process.duration}s")
     def run(self):
