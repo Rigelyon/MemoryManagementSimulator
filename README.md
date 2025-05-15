@@ -38,6 +38,21 @@ Welcome to Memory Management Simulator. This is a repository used for University
     python main.py
     ```
 
+### Build Locally
+
+If you want to create an executable locally:
+
+1. Make sure the environment is installed.
+2. Install PyInstaller:
+    ```bash
+    pip install pyinstaller
+    ```
+3. Create executable:
+    ```bash
+    pyinstaller --name "Memory Management Simulator" --windowed --onefile main.py
+    ```
+4. Executable will be available in the folder `dist/`
+
 ## Contributing
 
 Contributions are not accepted as this is a personal project.
