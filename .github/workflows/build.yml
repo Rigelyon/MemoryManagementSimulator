@@ -32,7 +32,7 @@ jobs:
     - name: Build executable with PyInstaller
       run: |
         .venv\Scripts\activate
-        pyinstaller --name "Memory Management Simulator" --windowed --onefile --icon=NONE main.py
+        pyinstaller --name "Memory Management Simulator" --windowed --onefile main.py
 
     - name: Upload executable artifact
       uses: actions/upload-artifact@v3
