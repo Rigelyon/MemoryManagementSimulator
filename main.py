@@ -1,8 +1,9 @@
 import customtkinter as ctk
-from config import PRIMARY_COLOR, SECONDARY_COLOR, WINDOW_WIDTH, WINDOW_HEIGHT
 from memory_manager import MemoryManager
 from memory_visualizer import MemoryVisualizer
 from process import Process
+from config import WINDOW_WIDTH, WINDOW_HEIGHT, PRIMARY_COLOR, SECONDARY_COLOR
+
 
 class MemoryManagementApp:
     def __init__(self):
@@ -453,6 +454,7 @@ class MemoryManagementApp:
                 )
             else:
                 time_var.set(f"Time: {process.elapsed_time}s / {process.duration}s")
+
     def run(self):
         self.root.mainloop()
 
