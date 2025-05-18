@@ -275,12 +275,12 @@ class MemoryManagementApp:
             name = self.process_name_var.get()
             size = int(self.process_size_var.get())
             duration = int(self.process_time_var.get())
-
             if not name or size <= 0 or duration <= 0:
                 self.status_var.set("Please enter valid process details")
                 return
 
             process = Process(name, size, duration)
+
             algorithm = self.algorithm_var.get()
             result = self.memory_manager.allocate_process(process, algorithm)
 
@@ -300,7 +300,6 @@ class MemoryManagementApp:
     def add_to_process_list(self, process):
         process_item = ctk.CTkFrame(self.process_list_scroll)
         process_item.pack(fill="x", padx=5, pady=5)
-
         process_item.grid_columnconfigure(0, weight=1)
 
         partition_id = self.memory_manager.get_process_partition(process.name)
@@ -344,6 +343,7 @@ class MemoryManagementApp:
                 "Worst Fit": "#FF9800",
             }
             algo_color = algo_colors.get(process.algorithm, "#9C27B0")
+
             algo_letter = (
                 "".join(word[0] for word in process.algorithm.split())
                 if process.algorithm
@@ -390,6 +390,15 @@ class MemoryManagementApp:
         self.memory_visualizer.redraw()
         self.status_var.set(f"Process '{process.name}' removed")
 
+    def process_expired_callback(self, process_name):
+        self.root.after(0, self.remove_expired_process_from_ui, process_name)
+
+    def remove_expired_process_from_ui(self, process_name):
+        if process_name in self.process_ui_elements:
+            self.process_ui_elements[process_name]["frame"].destroy()
+            del self.process_ui_elements[process_name]
+            self.status_var.set(f"Process '{process_name}' completed and removed")
+
     def clear_all(self):
         self.memory_manager.clear_all()
         for widget in self.process_list_scroll.winfo_children():
@@ -416,7 +425,6 @@ class MemoryManagementApp:
                 )
             else:
                 time_var.set(f"Time: {process.elapsed_time}s / {process.duration}s")
-
     def run(self):
         self.root.mainloop()
 
