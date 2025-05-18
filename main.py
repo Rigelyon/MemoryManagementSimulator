@@ -2,7 +2,7 @@ import customtkinter as ctk
 from memory_manager import MemoryManager
 from memory_visualizer import MemoryVisualizer
 from process import Process
-from config import WINDOW_WIDTH, WINDOW_HEIGHT, PRIMARY_COLOR, SECONDARY_COLOR
+from config import WINDOW_WIDTH, WINDOW_HEIGHT, SECONDARY_COLOR
 
 
 class MemoryManagementApp:
@@ -15,11 +15,13 @@ class MemoryManagementApp:
         ctk.set_default_color_theme("blue")
 
         self.memory_manager = MemoryManager(total_memory=1024)
+        self.memory_manager.register_process_callback(self.process_expired_callback)
 
         self.active_sliders = []
         self.partition_values = []
 
         self.create_ui()
+        self.start_ui_update_timer()
 
     def create_ui(self):
         self.main_frame = ctk.CTkFrame(self.root)

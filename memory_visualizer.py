@@ -11,6 +11,8 @@ class MemoryVisualizer:
         self.canvas_width = 500
         self.margin = 20
 
+        self.memory_manager.register_callback(self.update_visualization)
+
         self.create_ui()
 
     def create_ui(self):
