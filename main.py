@@ -15,6 +15,7 @@ class MemoryManagementApp:
         ctk.set_default_color_theme("blue")
 
         self.memory_manager = MemoryManager(total_memory=1024)
+
         self.active_sliders = []
         self.partition_values = []
 
@@ -98,50 +99,71 @@ class MemoryManagementApp:
         process_frame = ctk.CTkFrame(self.left_panel)
         process_frame.pack(fill="x", padx=10, pady=10)
 
-        name_label = ctk.CTkLabel(process_frame, text="Process Name:")
+        process_label = ctk.CTkLabel(
+            process_frame, text="Process Creation:", font=ctk.CTkFont(weight="bold")
+        )
+        process_label.pack(pady=5)
+
+        # Create a frame for all the process inputs using grid layout
+        process_inputs_frame = ctk.CTkFrame(process_frame)
+        process_inputs_frame.pack(fill="x", padx=5, pady=5)
+
+        # Process Name
+        name_label = ctk.CTkLabel(
+            process_inputs_frame,
+            text="Process Name:",
+        )
         name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
         self.process_name_var = ctk.StringVar(value="Process 1")
         name_entry = ctk.CTkEntry(
-            process_frame, textvariable=self.process_name_var, width=150
+            process_inputs_frame,
+            textvariable=self.process_name_var,
+            width=150,
         )
         name_entry.grid(row=0, column=1, padx=5, pady=5)
 
-        size_label = ctk.CTkLabel(process_frame, text="Process Size (MB):")
+        # Process Size
+        size_label = ctk.CTkLabel(process_inputs_frame, text="Process Size (MB):")
         size_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
         self.process_size_var = ctk.StringVar(value="60")
         size_entry = ctk.CTkEntry(
-            process_frame, textvariable=self.process_size_var, width=150
+            process_inputs_frame,
+            textvariable=self.process_size_var,
+            width=150,
         )
         size_entry.grid(row=1, column=1, padx=5, pady=5)
 
-        time_label = ctk.CTkLabel(process_frame, text="Duration (seconds):")
+        # Duration
+        time_label = ctk.CTkLabel(process_inputs_frame, text="Duration (seconds):")
         time_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
         self.process_time_var = ctk.StringVar(value="120")
         time_entry = ctk.CTkEntry(
-            process_frame, textvariable=self.process_time_var, width=150
+            process_inputs_frame, textvariable=self.process_time_var, width=150
         )
         time_entry.grid(row=2, column=1, padx=5, pady=5)
 
-        algo_label = ctk.CTkLabel(process_frame, text="Algorithm:")
+        # Algorithm
+        algo_label = ctk.CTkLabel(process_inputs_frame, text="Algorithm:")
         algo_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
 
         self.algorithm_var = ctk.StringVar(value="First Fit")
         algorithms = ["First Fit", "Best Fit", "Worst Fit"]
         algo_dropdown = ctk.CTkOptionMenu(
-            process_frame, values=algorithms, variable=self.algorithm_var
+            process_inputs_frame, values=algorithms, variable=self.algorithm_var
         )
         algo_dropdown.grid(row=3, column=1, padx=5, pady=5)
 
+        # Add Process Button
         add_btn = ctk.CTkButton(
             process_frame, text="Add Process", command=self.add_process
         )
-        add_btn.grid(row=4, column=0, columnspan=2, padx=5, pady=10)
+        add_btn.pack(pady=5)
 
         process_list_frame = ctk.CTkFrame(self.left_panel)
-        process_list_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        process_list_frame.pack(fill="x", padx=10, pady=10)
 
         list_label = ctk.CTkLabel(
             process_list_frame, text="Process Queue:", font=ctk.CTkFont(weight="bold")
@@ -151,7 +173,7 @@ class MemoryManagementApp:
         self.process_list_scroll = ctk.CTkScrollableFrame(
             process_list_frame, width=250, height=200
         )
-        self.process_list_scroll.pack(fill="both", expand=True, padx=5, pady=5)
+        self.process_list_scroll.pack(fill="x", padx=5, pady=5)
 
         self.process_ui_elements = {}
 
@@ -178,6 +200,7 @@ class MemoryManagementApp:
 
         self.active_sliders = []
         num_partitions = int(choice)
+
         default_percentage = 100 / num_partitions
 
         for i in range(num_partitions):
@@ -209,10 +232,12 @@ class MemoryManagementApp:
 
     def on_slider_change(self, value, index):
         self.active_sliders[index][1].configure(text=f"{value:.1f}%")
+
         total = sum(slider_var.get() for slider_var, _ in self.active_sliders)
 
         if abs(total - 100) > 0.1:
             excess = total - 100
+
             adjustable_sliders = [
                 (i, var)
                 for i, (var, _) in enumerate(self.active_sliders)
@@ -237,11 +262,13 @@ class MemoryManagementApp:
             self.partition_values = [
                 val * (100 / total) for val in self.partition_values
             ]
+
             for i, (var, label) in enumerate(self.active_sliders):
                 var.set(self.partition_values[i])
                 label.configure(text=f"{self.partition_values[i]:.1f}%")
 
         process_names = list(self.process_ui_elements.keys())
+
         result = self.memory_manager.create_partitions(self.partition_values)
 
         if result:
@@ -250,6 +277,7 @@ class MemoryManagementApp:
                     self.process_ui_elements[process_name]["frame"].destroy()
 
             self.process_ui_elements = {}
+
             self.memory_visualizer.redraw()
             self.status_var.set(
                 f"Memory partitioned into {len(self.partition_values)} sections"
@@ -275,6 +303,7 @@ class MemoryManagementApp:
             name = self.process_name_var.get()
             size = int(self.process_size_var.get())
             duration = int(self.process_time_var.get())
+
             if not name or size <= 0 or duration <= 0:
                 self.status_var.set("Please enter valid process details")
                 return
@@ -425,6 +454,7 @@ class MemoryManagementApp:
                 )
             else:
                 time_var.set(f"Time: {process.elapsed_time}s / {process.duration}s")
+
     def run(self):
         self.root.mainloop()
 
