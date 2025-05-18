@@ -1,0 +1,1 @@
+size_entry = ctk.CTkEntry(process_frame, textvariable=self.process_size_var, width=150)
