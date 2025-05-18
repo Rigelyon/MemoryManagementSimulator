@@ -2,6 +2,7 @@ from process import Process
 import time
 import threading
 
+
 class MemoryBlock:
     def __init__(self, start, size, is_free=True, process=None, partition_id=None):
         self.start = start
@@ -10,6 +11,7 @@ class MemoryBlock:
         self.process = process
         self.end = start + size - 1
         self.partition_id = partition_id
+
 
 class MemoryManager:
     def __init__(self, total_memory=1024):
@@ -46,7 +48,9 @@ class MemoryManager:
 
     def resize_memory(self, new_size):
         if new_size < self.total_memory:
-            used_memory = sum(block.size for block in self.memory_blocks if not block.is_free)
+            used_memory = sum(
+                block.size for block in self.memory_blocks if not block.is_free
+            )
             if used_memory > new_size:
                 return False
 
@@ -56,7 +60,9 @@ class MemoryManager:
             self.clear_all()
             self.create_partitions(self.partitions)
         else:
-            allocated_blocks = [block for block in self.memory_blocks if not block.is_free]
+            allocated_blocks = [
+                block for block in self.memory_blocks if not block.is_free
+            ]
             if not allocated_blocks:
                 self.memory_blocks = [MemoryBlock(0, new_size)]
             else:
@@ -65,12 +71,16 @@ class MemoryManager:
 
                 for block in sorted(allocated_blocks, key=lambda b: b.start):
                     if block.start > last_end:
-                        self.memory_blocks.append(MemoryBlock(last_end, block.start - last_end))
+                        self.memory_blocks.append(
+                            MemoryBlock(last_end, block.start - last_end)
+                        )
                     self.memory_blocks.append(block)
                     last_end = block.end + 1
 
                 if last_end < new_size:
-                    self.memory_blocks.append(MemoryBlock(last_end, new_size - last_end))
+                    self.memory_blocks.append(
+                        MemoryBlock(last_end, new_size - last_end)
+                    )
 
         self.notify_callbacks()
         return True
@@ -128,9 +138,12 @@ class MemoryManager:
 
                 for i in range(1, len(blocks)):
                     next_block = blocks[i]
-                    if (current_block.is_free and next_block.is_free and 
-                        current_block.end + 1 == next_block.start and
-                        current_block.partition_id == next_block.partition_id):
+                    if (
+                        current_block.is_free
+                        and next_block.is_free
+                        and current_block.end + 1 == next_block.start
+                        and current_block.partition_id == next_block.partition_id
+                    ):
                         current_block.size += next_block.size
                         current_block.end = next_block.end
                     else:
@@ -145,8 +158,11 @@ class MemoryManager:
 
             for i in range(1, len(self.memory_blocks)):
                 next_block = self.memory_blocks[i]
-                if (current_block.is_free and next_block.is_free and 
-                    current_block.end + 1 == next_block.start):
+                if (
+                    current_block.is_free
+                    and next_block.is_free
+                    and current_block.end + 1 == next_block.start
+                ):
                     current_block.size += next_block.size
                     current_block.end = next_block.end
                 else:
@@ -174,7 +190,7 @@ class MemoryManager:
 
     def best_fit(self, process):
         best_block_index = -1
-        best_block_size = float('inf')
+        best_block_size = float("inf")
 
         for i, block in enumerate(self.memory_blocks):
             if block.is_free and block.size >= process.size:
@@ -202,7 +218,11 @@ class MemoryManager:
 
     def get_process_partition(self, process_name):
         for block in self.memory_blocks:
-            if not block.is_free and block.process and block.process.name == process_name:
+            if (
+                not block.is_free
+                and block.process
+                and block.process.name == process_name
+            ):
                 return block.partition_id
         return None
 
@@ -217,8 +237,14 @@ class MemoryManager:
             block.is_free = False
             block.process = process
         else:
-            used_block = MemoryBlock(block.start, process.size, False, process, partition_id)
-            free_block = MemoryBlock(block.start + process.size, block.size - process.size, partition_id=partition_id)
+            used_block = MemoryBlock(
+                block.start, process.size, False, process, partition_id
+            )
+            free_block = MemoryBlock(
+                block.start + process.size,
+                block.size - process.size,
+                partition_id=partition_id,
+            )
 
             self.memory_blocks[block_index] = used_block
             self.memory_blocks.insert(block_index + 1, free_block)
@@ -236,7 +262,11 @@ class MemoryManager:
             return False
 
         for block in self.memory_blocks:
-            if not block.is_free and block.process and block.process.name == process_name:
+            if (
+                not block.is_free
+                and block.process
+                and block.process.name == process_name
+            ):
                 block.is_free = True
                 block.process = None
                 del self.processes[process_name]
