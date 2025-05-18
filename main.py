@@ -2,7 +2,7 @@ import customtkinter as ctk
 from config import PRIMARY_COLOR, SECONDARY_COLOR, WINDOW_WIDTH, WINDOW_HEIGHT
 from memory_manager import MemoryManager
 from memory_visualizer import MemoryVisualizer
-
+from process import Process
 
 class MemoryManagementApp:
     def __init__(self):
@@ -298,11 +298,161 @@ class MemoryManagementApp:
             self.status_var.set("Invalid memory size")
 
     def add_process(self):
-        pass
+        try:
+            name = self.process_name_var.get()
+            size = int(self.process_size_var.get())
+            duration = int(self.process_time_var.get())
+
+            if not name or size <= 0 or duration <= 0:
+                self.status_var.set("Please enter valid process details")
+                return
+
+            process = Process(name, size, duration)
+
+            algorithm = self.algorithm_var.get()
+            result = self.memory_manager.allocate_process(process, algorithm)
+
+            if result:
+                self.add_to_process_list(process)
+                self.memory_visualizer.redraw()
+                self.process_name_var.set("")
+                self.process_size_var.set("")
+                self.process_time_var.set("")
+                self.status_var.set(f"Process '{name}' added successfully")
+            else:
+                self.status_var.set(f"Not enough space for process '{name}'")
+
+        except ValueError:
+            self.status_var.set("Invalid size or duration")
+
+    def add_to_process_list(self, process):
+        process_item = ctk.CTkFrame(self.process_list_scroll)
+        process_item.pack(fill="x", padx=5, pady=5)
+        process_item.grid_columnconfigure(0, weight=1)
+
+        partition_id = self.memory_manager.get_process_partition(process.name)
+        partition_text = (
+            f" [Partition {partition_id+1}]" if partition_id is not None else ""
+        )
+
+        header_frame = ctk.CTkFrame(process_item, fg_color="transparent")
+        header_frame.grid(row=0, column=0, sticky="ew", padx=5, pady=2)
+
+        process_name_label = ctk.CTkLabel(
+            header_frame, text=f"{process.name} ({process.size} MB)", anchor="w"
+        )
+        process_name_label.pack(side="left")
+
+        if partition_id is not None:
+            partition_colors = [
+                "#3a7ebf",
+                "#bf3a3a",
+                "#3abf7e",
+                "#7e3abf",
+                "#bf7e3a",
+                "#7ebf3a",
+            ]
+            color = partition_colors[partition_id % len(partition_colors)]
+            partition_label = ctk.CTkLabel(
+                header_frame,
+                text=f"P{partition_id}",
+                fg_color=color,
+                text_color="white",
+                corner_radius=10,
+                width=30,
+                height=20,
+            )
+            partition_label.pack(side="right", padx=5)
+
+        if process.algorithm:
+            algo_colors = {
+                "First Fit": "#4CAF50",
+                "Best Fit": "#2196F3",
+                "Worst Fit": "#FF9800",
+            }
+            algo_color = algo_colors.get(process.algorithm, "#9C27B0")
+
+            algo_letter = (
+                "".join(word[0] for word in process.algorithm.split())
+                if process.algorithm
+                else "?"
+            )
+            algo_label = ctk.CTkLabel(
+                header_frame,
+                text=algo_letter,
+                fg_color=algo_color,
+                text_color="white",
+                corner_radius=10,
+                width=30,
+                height=20,
+            )
+            algo_label.pack(side="right", padx=5)
+
+        time_var = ctk.StringVar(
+            value=f"Time: {process.elapsed_time}s / {process.duration}s"
+        )
+        time_label = ctk.CTkLabel(process_item, textvariable=time_var)
+        time_label.grid(row=1, column=0, sticky="w", padx=5, pady=2)
+
+        remove_btn = ctk.CTkButton(
+            process_item,
+            text="Remove",
+            width=70,
+            height=25,
+            command=lambda p=process: self.remove_process(p, process_item),
+            fg_color=SECONDARY_COLOR,
+        )
+        remove_btn.grid(row=0, column=1, rowspan=2, padx=5, pady=2)
+
+        self.process_ui_elements[process.name] = {
+            "frame": process_item,
+            "time_var": time_var,
+            "process": process,
+        }
+
+    def remove_process(self, process, list_item):
+        self.memory_manager.deallocate_process(process.name)
+        list_item.destroy()
+        if process.name in self.process_ui_elements:
+            del self.process_ui_elements[process.name]
+        self.memory_visualizer.redraw()
+        self.status_var.set(f"Process '{process.name}' removed")
+
+    def process_expired_callback(self, process_name):
+        self.root.after(0, self.remove_expired_process_from_ui, process_name)
+
+    def remove_expired_process_from_ui(self, process_name):
+        if process_name in self.process_ui_elements:
+            self.process_ui_elements[process_name]["frame"].destroy()
+            del self.process_ui_elements[process_name]
+            self.status_var.set(f"Process '{process_name}' completed and removed")
 
     def clear_all(self):
-        pass
+        self.memory_manager.clear_all()
+        for widget in self.process_list_scroll.winfo_children():
+            widget.destroy()
+        self.process_ui_elements = {}
+        self.memory_visualizer.redraw()
+        self.status_var.set("All processes cleared")
 
+    def start_ui_update_timer(self):
+        self.update_process_times()
+        self.root.after(1000, self.start_ui_update_timer)
+
+    def update_process_times(self):
+        for process_name, ui_data in self.process_ui_elements.items():
+            process = ui_data["process"]
+            time_var = ui_data["time_var"]
+            frame = ui_data["frame"]
+
+            if process_name in self.memory_manager.processes:
+                process = self.memory_manager.processes[process_name]
+                remaining_time = process.duration - process.elapsed_time
+                time_var.set(
+                    f"Time: {process.elapsed_time}s / {process.duration}s ({remaining_time}s left)"
+                )
+            else:
+                time_var.set(f"Time: {process.elapsed_time}s / {process.duration}s")
     def run(self):
         self.root.mainloop()
 
