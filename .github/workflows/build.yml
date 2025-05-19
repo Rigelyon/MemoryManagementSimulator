@@ -38,7 +38,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Memory Management Simulator
-        path: dist/MemoryManagementSimulator.exe
+        path: dist/Memory Management Simulator.exe
         retention-days: 7
 
   release:
