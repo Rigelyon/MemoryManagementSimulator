@@ -35,13 +35,13 @@ jobs:
     - name: Build executable with PyInstaller
       run: |
         .venv\Scripts\activate
-        pyinstaller --name "Memory Management Simulator" --windowed --onefile main.py
+        pyinstaller --name "MemoryManagementSimulator" --windowed --onefile main.py
 
     - name: Upload executable artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Memory Management Simulator
-        path: dist/Memory Management Simulator.exe
+        name: MemoryManagementSimulator
+        path: dist/MemoryManagementSimulator.exe
         retention-days: 7
 
   release:
@@ -53,11 +53,11 @@ jobs:
     - name: Download executable artifact
       uses: actions/download-artifact@v4
       with:
-        name: Memory Management Simulator
+        name: MemoryManagementSimulator
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        files: Memory Management Simulator.exe
+        files: MemoryManagementSimulator.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
