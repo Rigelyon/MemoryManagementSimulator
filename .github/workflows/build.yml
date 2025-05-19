@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -35,7 +35,7 @@ jobs:
         pyinstaller --name "Memory Management Simulator" --windowed --onefile main.py
 
     - name: Upload executable artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Memory Management Simulator
         path: dist/Memory Management Simulator.exe
@@ -48,7 +48,7 @@ jobs:
     
     steps:
     - name: Download executable artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Memory Management Simulator
 
