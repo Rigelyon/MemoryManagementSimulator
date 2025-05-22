@@ -4,7 +4,42 @@ from config import BLOCK_COLORS
 
 
 class MemoryVisualizer:
+    """
+    Kelas yang menangani visualisasi alokasi memori dalam antarmuka grafis.
+
+    Kelas ini bertanggung jawab untuk menampilkan representasi visual dari
+    alokasi memori dalam sistem. Visualisasi mencakup:
+    - Blok memori yang digunakan dan kosong
+    - Partisi memori (jika ada)
+    - Proses yang sedang berjalan
+    - Statistik penggunaan memori
+
+    Visualisasi ditampilkan dalam bentuk bar horizontal, di mana:
+    - Setiap blok memori direpresentasikan sebagai segmen bar
+    - Warna berbeda digunakan untuk membedakan proses
+    - Partisi ditandai dengan warna khusus
+    - Ukuran blok proporsional dengan ukuran memori yang digunakan
+
+    Attributes:
+        parent: Widget induk untuk visualisasi (biasanya frame atau window)
+        memory_manager: Instance dari MemoryManager yang menyediakan data
+        canvas_height (int): Tinggi canvas dalam piksel
+        canvas_width (int): Lebar canvas dalam piksel
+        margin (int): Margin canvas dalam piksel untuk padding
+    """
+
     def __init__(self, parent, memory_manager):
+        """
+        Inisialisasi objek MemoryVisualizer baru.
+
+        Method ini membuat instance baru dari MemoryVisualizer dan menyiapkan
+        antarmuka visualisasi. Canvas dan elemen UI lainnya dibuat dan
+        dikonfigurasi untuk menampilkan visualisasi memori.
+
+        Args:
+            parent: Widget induk untuk visualisasi
+            memory_manager: Instance dari MemoryManager yang menyediakan data
+        """
         self.parent = parent
         self.memory_manager = memory_manager
         self.canvas_height = 400
@@ -16,6 +51,15 @@ class MemoryVisualizer:
         self.create_ui()
 
     def create_ui(self):
+        """
+        Membuat elemen-elemen antarmuka pengguna untuk visualisasi.
+
+        Method ini membuat dan mengkonfigurasi semua elemen UI yang diperlukan:
+        - Canvas untuk visualisasi memori
+        - Label untuk judul
+        - Frame untuk statistik
+        - Label untuk menampilkan informasi penggunaan memori
+        """
         title_label = ctk.CTkLabel(
             self.parent,
             text="Memory Allocation Visualization",
@@ -68,9 +112,30 @@ class MemoryVisualizer:
         self.redraw()
 
     def redraw(self):
+        """
+        Menggambar ulang visualisasi memori.
+
+        Method ini memicu pembaruan visualisasi dengan mengambil data terbaru
+        dari memory_manager. Biasanya dipanggil setelah ada perubahan pada
+        alokasi memori.
+        """
         self.update_visualization(self.memory_manager.memory_blocks)
 
     def update_visualization(self, memory_blocks):
+        """
+        Memperbarui visualisasi berdasarkan blok memori saat ini.
+
+        Method ini menggambar ulang visualisasi memori berdasarkan data blok
+        memori yang diberikan. Visualisasi mencakup:
+        - Blok memori yang digunakan dan kosong
+        - Partisi (jika ada)
+        - Label untuk setiap blok
+        - Skala memori
+        - Statistik penggunaan
+
+        Args:
+            memory_blocks (list): Daftar blok memori yang akan divisualisasikan
+        """
         self.canvas.delete("all")
 
         if not memory_blocks:
